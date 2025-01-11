@@ -1,0 +1,240 @@
+%% FASTQ Read
+[~,S1,Q1] = fastqread('Mario1_S1_L001_R1_001.fastq');
+[~,S2,Q2] = fastqread('Mario1_S1_L001_R2_001.fastq');
+%% Mario number select
+Num = input("number? :");
+%% DNA data
+Data_codon = ["ATA","ATC","ATG","ACA","ACT","ACG","AGA","AGT","AGC","TAT","TAC","TAG","TCA","TCT","TCG","TGA","TGT","TGC"];
+Index_codon = ["AT","AC","AG","TA","TC","TG","CA","CT"];
+Forward_primer = ["TTCGTTCGTCGTTGATTGGT","TCCTCAGCCGATGAAATTCC","TGTATTTCCTTCGGTGCTCC"];
+Backward_primer = ["AAACGGAGCCATGAGTTTGT","GCGGAAACGTAGTGAAGGTA","TTTCGACAACGGTCTGGTTT"];
+%% Mario 1
+M1_1 = 'TTCGTTCGTCGTTGATTGGTATACGACGAGATACTACACGACGACGACGACGTACTACTACTACTATACGAAACGGAGCCATGAGTTTGT';
+M1_2 = 'TTCGTTCGTCGTTGATTGGTACACGACGTGATCAACAATCACGACGACGAGTACAATAACAATAATCACGAAACGGAGCCATGAGTTTGT';
+M1_3 = 'TTCGTTCGTCGTTGATTGGTAGACGAGTACATCAATATCAATAACGACGAGTTCAATAACATGATCTACGAAACGGAGCCATGAGTTTGT';
+M1_4 = 'TTCGTTCGTCGTTGATTGGTTAACGACGACTATAATAATAACGACGACGACGTGATAGTGAACGACGACGAAACGGAGCCATGAGTTTGT';
+M1_5 = 'TTCGTTCGTCGTTGATTGGTTCACGAGTTGATCGTAGTCTACGACGACGAGTTGATACATGAGCACGACGAAACGGAGCCATGAGTTTGT';
+M1_6 = 'TTCGTTCGTCGTTGATTGGTTGACGAGTTGATCGTACTATACGACGACGAGATGAATAATGTATACGACGAAACGGAGCCATGAGTTTGT';
+M1_7 = 'TTCGTTCGTCGTTGATTGGTCAACGACGTAGATATACACGACGACGACGACGAGATACACGACGACGACGAAACGGAGCCATGAGTTTGT';
+M1_8 = 'TTCGTTCGTCGTTGATTGGTCTACGACGAGTTGAACGACGACGACGACGACGAGTTGATCTACGACGACGAAACGGAGCCATGAGTTTGT';
+%% Mario 2
+M2_1 = 'TCCTCAGCCGATGAAATTCCATACGACGAGATACTACACGACGACGACGACGTACTACTACTACTATACGGCGGAAACGTAGTGAAGGTA';
+M2_2 = 'TCCTCAGCCGATGAAATTCCACACGACGTGATCAACAATCACGACGACGAGTACAATAACAATAATCACGGCGGAAACGTAGTGAAGGTA';
+M2_3 = 'TCCTCAGCCGATGAAATTCCAGACGAGTACATCAATATCAATAACGACGAGTTCAATAACATGATCTACGGCGGAAACGTAGTGAAGGTA';
+M2_4 = 'TCCTCAGCCGATGAAATTCCTAACGACGACTATAATAATAACGACGACGTGATGATACTGAACGACGACGGCGGAAACGTAGTGAAGGTA';
+M2_5 = 'TCCTCAGCCGATGAAATTCCTCATATGATGATACTAGTGAATAATCATAATCTGAAGCTACTAGTCAATCGCGGAAACGTAGTGAAGGTA';
+M2_6 = 'TCCTCAGCCGATGAAATTCCTGATAACGACGTACTACTATACGACGACGACGACGTACTACTATACGTCTGCGGAAACGTAGTGAAGGTA';
+M2_7 = 'TCCTCAGCCGATGAAATTCCCAAGTTCGTACTACTACTACTAGTCTAGTTCGTACTACTACTACTAGTCTGCGGAAACGTAGTGAAGGTA';
+M2_8 = 'TCCTCAGCCGATGAAATTCCCTAGTACGACGACGACGACGACGACGACGACGACGACGACGACGACGACGGCGGAAACGTAGTGAAGGTA';
+%% Mario 3
+M3_1 = 'TGTATTTCCTTCGGTGCTCCATACGACGACGACGACGACGACGACGACGACGACGTACTACTATACGACGTTTCGACAACGGTCTGGTTT';
+M3_2 = 'TGTATTTCCTTCGGTGCTCCACACGACGAGATACTACTACTACACGACGACGAGTTGAATATCAACGACGTTTCGACAACGGTCTGGTTT';
+M3_3 = 'TGTATTTCCTTCGGTGCTCCAGACGACGTCATCAATATCAATAACGACGACGTCATGAATAACAATAATCTTTCGACAACGGTCTGGTTT';
+M3_4 = 'TGTATTTCCTTCGGTGCTCCTAACGACGTGAATAATATGATGAACGACGACGACGATAATAATAATCACGTTTCGACAACGGTCTGGTTT';
+M3_5 = 'TGTATTTCCTTCGGTGCTCCTCACGACGAGTTGATCGTCTATCACGACGACGACATGATGATCAATAACGTTTCGACAACGGTCTGGTTT';
+M3_6 = 'TGTATTTCCTTCGGTGCTCCTGACGACTATGTGATGATCAATCACGACGACGAGATACTACTATAGTACGTTTCGACAACGGTCTGGTTT';
+M3_7 = 'TGTATTTCCTTCGGTGCTCCCAACGACGAGATACTACTACTGAACGACGACGTCGTACTACTACTGAACGTTTCGACAACGGTCTGGTTT';
+M3_8 = 'TGTATTTCCTTCGGTGCTCCCTACGACGTGAACGACGTACACGACGACGACGTGATCTACGACGACGACGTTTCGACAACGGTCTGGTTT';
+%% Complementary sequence
+ComplementSeq = cell(1,length(S2));
+for a = 1 : length(S2)
+    if ~(sum(S2{a}(end-19:end) == Backward_primer{Num}) >= 18)
+        Reverse = S2{a};
+        A_F = strfind(Reverse,'A');
+        T_F = strfind(Reverse,'T');
+        G_F = strfind(Reverse,'G');
+        C_F = strfind(Reverse,'C');
+        S_comp = Reverse;
+        S_comp(A_F) = 'T';
+        S_comp(T_F) = 'A';
+        S_comp(G_F) = 'C';
+        S_comp(C_F) = 'G';
+        ComplementSeq{a} = flip(S_comp);
+    else
+        ComplementSeq{a} = S2{a};
+    end
+end
+%% T 제거
+S_old = [S1 ComplementSeq];
+S = cell(1,length(S_old));
+for a = 1:length(S_old);
+S{a} = S_old{a}(2:end);
+end
+%% forward, Reverse sequence 일치 확인 및 길이 확인.->아직 perfect matching x
+MarioSet = cell(length(S),1);
+for a = 1 : length(S)
+    if sum(S{a}(1:20) == Forward_primer{Num}) >= 18
+        Temp = S{a};
+        if length(Temp) < 110
+            MarioSet{a,1} = Temp;
+        elseif sum(Temp(1:20) == Forward_primer{Num}) >= 18
+            for b = 1 : length(Temp)-20
+                if length(Temp) > 110
+                    for c = 70 : 75
+                        if sum(Temp(c:c+19) == Backward_primer{Num}) >= 18
+                            if length(Temp(b:c+19)) == 90
+                                MarioSet{a,1} = Temp(b:c+19);
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+Mset = MarioSet;
+Mempty = ~cellfun('isempty',Mset);
+M = Mset(Mempty); 
+
+MSeq = cell(length(M),1);
+for a = 1 : length(M)
+    if length(M{a}) == 90
+        MSeq{a} = M{a};
+    end
+end
+
+Mempty = ~cellfun('isempty',MSeq);
+MSeq = MSeq(Mempty);
+Mcell = cell2mat(MSeq);
+
+Midxsort = zeros(length(Mcell),1);
+for a = 1 : length(Mcell)
+    for b = 1 : length(Index_codon)
+        if Mcell(a,21:22) == Index_codon{b}
+            Midxsort(a) = b;
+        end
+    end
+end
+
+Midxcell = cell(length(Mcell),8);
+for a = 1 : length(Mcell)
+    if Midxsort(a) ~= 0
+        Midxcell{a,Midxsort(a)} = Mcell(a,:);
+    end
+end
+
+MIdx1 = Midxcell(:,1);
+MIdx2 = Midxcell(:,2);
+MIdx3 = Midxcell(:,3);
+MIdx4 = Midxcell(:,4);
+MIdx5 = Midxcell(:,5);
+MIdx6 = Midxcell(:,6);
+MIdx7 = Midxcell(:,7);
+MIdx8 = Midxcell(:,8);
+%%
+Depth = [length(MIdx1);length(MIdx2);length(MIdx3);length(MIdx4);length(MIdx5);length(MIdx6);length(MIdx7);length(MIdx8)];
+PerfectCall = zeros(8,1);
+PerfectCall(1) = PfCall(MIdx1,M1_1);
+PerfectCall(2) = PfCall(MIdx2,M1_2);
+PerfectCall(3) = PfCall(MIdx3,M1_3);
+PerfectCall(4) = PfCall(MIdx4,M1_4);
+PerfectCall(5) = PfCall(MIdx5,M1_5);
+PerfectCall(6) = PfCall(MIdx6,M1_6);
+PerfectCall(7) = PfCall(MIdx7,M1_7);
+PerfectCall(8) = PfCall(MIdx8,M1_8);
+
+QRDNA = {'M1_1','QR2','QR3','QR4','QR5','QR6'}';
+writetable(table(QRDNA,Depth,PerfectCall),"QR fastq "+z+"번 파일 Depth&Perfectcall.xls",'sheet','1')
+%%
+MIdx1 = MIdx1(~cellfun('isempty',MIdx1));
+MIdx2 = MIdx2(~cellfun('isempty',MIdx2));
+MIdx3 = MIdx3(~cellfun('isempty',MIdx3));
+MIdx4 = MIdx4(~cellfun('isempty',MIdx4));
+MIdx5 = MIdx5(~cellfun('isempty',MIdx5));
+MIdx6 = MIdx6(~cellfun('isempty',MIdx6));
+MIdx7 = MIdx7(~cellfun('isempty',MIdx7));
+MIdx8 = MIdx8(~cellfun('isempty',MIdx8));
+% W = cell2mat(B);
+% for b = 1 : size(W,2)
+%     U(b,1) = length(strfind(W(:,b)','A')); % A가 포함되어 있는 개수
+%     U(b,2) = length(strfind(W(:,b)','T')); % T가 포함되어 있는 개수
+%     U(b,3) = length(strfind(W(:,b)','C')); % C가 포함되어 있는 개수
+%     U(b,4) = length(strfind(W(:,b)','G')); % G가 포함되어 있는 개수
+% end
+% 
+% for c = 1 : length(U)
+%     K(c,1) = U(c,1)/sum(U(c,:))*100; % codon 비율 백분율로 표현
+%     K(c,2) = U(c,2)/sum(U(c,:))*100;
+%     K(c,3) = U(c,3)/sum(U(c,:))*100;
+%     K(c,4) = U(c,4)/sum(U(c,:))*100;
+% end
+% 
+% bar(U,'stacked')
+% title('Mario 1/ Index 1 Sorting')
+% legend('A','T','C','G')
+% xlim([0 size(W,2)+1])
+%%
+MIdx1 = mode(cell2mat(MIdx1(~cellfun('isempty',MIdx1))));
+MIdx2 = mode(cell2mat(MIdx2(~cellfun('isempty',MIdx2))));
+MIdx3 = mode(cell2mat(MIdx3(~cellfun('isempty',MIdx3))));
+MIdx4 = mode(cell2mat(MIdx4(~cellfun('isempty',MIdx4))));
+MIdx5 = mode(cell2mat(MIdx5(~cellfun('isempty',MIdx5))));
+MIdx6 = mode(cell2mat(MIdx6(~cellfun('isempty',MIdx6))));
+MIdx7 = mode(cell2mat(MIdx7(~cellfun('isempty',MIdx7))));
+MIdx8 = mode(cell2mat(MIdx8(~cellfun('isempty',MIdx8))));
+
+MFrame = [MIdx1; MIdx2; MIdx3 ;MIdx4 ;MIdx5 ;MIdx6 ;MIdx7 ;MIdx8];
+Mdata = MFrame(:,23:70);
+for b = 1 : 8
+    for a = 3 : 3 : length(Mdata)
+        MNumber(b,a/3) = string(Mdata(b,a-2:a));
+    end
+end
+
+for a = 1 : 8
+    for b = 1 : 16
+        for c = 1 : length(Data_codon)
+            if MNumber(a,b) == Data_codon(c)
+                MDecodeNum(a,b) = c;
+            end
+        end
+    end
+end
+NM = reshape(MDecodeNum',[8 16])'-1;
+for r = 1 : size(NM,1)
+    for c = 1 : size(NM,2)
+        NMP(r,2*c-1) = floor(NM(r,c)/4);
+        NMP(r,2*c) = rem(NM(r,c),4);
+    end
+end
+%%
+MPixel = zeros(16,16,3);
+rgb1M0 = find(NMP==0);
+rgb1M1 = find(NMP==1);
+rgb1M2 = find(NMP==2);
+rgb1M3 = find(NMP==3);
+
+MPage1 = MPixel(:,:,1);
+MPage2 = MPixel(:,:,2);
+MPage3 = MPixel(:,:,3);
+
+MPage1(rgb1M0) = 0.93;
+MPage2(rgb1M0) = 0.69;
+MPage3(rgb1M0) = 0.13;
+MPixel(:,:,1) = MPage1;
+MPixel(:,:,2) = MPage2;
+MPixel(:,:,3) = MPage3;
+
+MPage1(rgb1M1) = 0;
+MPage2(rgb1M1) = 0.67;
+MPage3(rgb1M1) = 1;
+MPixel(:,:,1) = MPage1;
+MPixel(:,:,2) = MPage2;
+MPixel(:,:,3) = MPage3;
+
+MPage1(rgb1M2) = 1;
+MPage2(rgb1M2) = 0;
+MPage3(rgb1M2) = 0;
+MPixel(:,:,1) = MPage1;
+MPixel(:,:,2) = MPage2;
+MPixel(:,:,3) = MPage3;
+
+MPage1(rgb1M3) = 0.42;
+MPage2(rgb1M3) = 0.38;
+MPage3(rgb1M3) = 0.15;
+MPixel(:,:,1) = MPage1;
+MPixel(:,:,2) = MPage2;
+MPixel(:,:,3) = MPage3;
+image(MPixel)

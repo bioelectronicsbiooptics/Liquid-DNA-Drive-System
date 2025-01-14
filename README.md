@@ -36,11 +36,13 @@ git clone https://github.com/bioelectronicsbiooptics/Liquid-DNA-Drive-System/blo
 
 ## 3. Demo
 
-###3.1 Instructions to Run on Data
+### 3.1 Instructions to Run on Data
 1. Prepare two FASTQ files (e.g., R1.fastq and R2.fastq) in the same directory as the script.
 2. Modify the script to include your file names:
-[~, S1, Q1] = fastqread('R1.fastq');
+
+[~, S1, Q1] = fastqread('R1.fastq'); 
 [~, S2, Q2] = fastqread('R2.fastq'); 
+
 3. Run the script in MATLAB.
 
 ### 3.2 Expected Output
